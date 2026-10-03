@@ -267,7 +267,7 @@ def run_exact(differences, alternative):
         result = json.loads(completed.stdout, object_pairs_hook=_unique_object)
         if not _valid_response(result, estimate):
             raise ValueError("invalid worker response")
-    except (ValueError, TypeError, UnicodeError):
+    except (ValueError, TypeError, UnicodeError, RecursionError):
         return _unsupported("internal_error", "analysis worker returned an invalid response", estimate)
     return result
 

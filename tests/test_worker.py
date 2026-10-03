@@ -171,6 +171,15 @@ class WorkerTests(unittest.TestCase):
             result = self.worker.run_exact([1, 1], "two-sided")
         self.assertUnsupported(result, "internal_error")
 
+    def test_worker_json_recursion_error_withholds_all_inference(self):
+        # CPython versions differ in JSON nesting limits. Keep the real nested
+        # response fixture above, and exercise this exception boundary on each.
+        reply = subprocess.CompletedProcess([sys.executable], 0, b"{}", b"")
+        with mock.patch.object(self.worker.subprocess, "run", return_value=reply):
+            with mock.patch.object(self.worker.json, "loads", side_effect=RecursionError):
+                result = self.worker.run_exact([1, 1], "two-sided")
+        self.assertUnsupported(result, "internal_error")
+
     def test_existing_stricter_limits_are_never_relaxed(self):
         class ResourceModel:
             RLIMIT_CPU = 0
