@@ -1,0 +1,16 @@
+{
+  "schema": "benchinterlace.spec.v1",
+  "workload": "Replace illustrative paths before planning",
+  "cwd": "/absolute/workload-directory",
+  "commands": {
+    "A": {"argv": ["/absolute/old-program", "input.txt"]},
+    "B": {"argv": ["/absolute/new-program", "input.txt"]}
+  },
+  "files": [{"id": "input", "path": "/absolute/workload-directory/input.txt"}],
+  "measured_pairs": 20,
+  "warmup_pairs": 2,
+  "alternative": "two-sided",
+  "command_timeout_ns": 30000000000,
+  "run_timeout_ns": 1800000000000,
+  "output_check": {"mode": "equal-within-pair"}
+}

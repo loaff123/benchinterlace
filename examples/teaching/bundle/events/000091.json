@@ -1,0 +1,1 @@
+{"data":{"completed_slots":16,"not_run_slots":[],"reasons":[],"state":"complete"},"kind":"run_end","plan_id":"sha256:7fdc0c9980b5dacddf1fd318b584a4efee2757a63e56557e1dd92dc0e36ece9b","previous_sha256":"a27114a28a98e719db7464b8207efb8c5eb78b085bf4df241928932492c7eb53","schema":"benchinterlace.event.v1","seq":91}

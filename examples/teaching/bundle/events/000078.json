@@ -1,0 +1,1 @@
+{"data":{"pair":6,"phase":"measured","reasons":[],"status":"passed"},"kind":"pair_check","plan_id":"sha256:7fdc0c9980b5dacddf1fd318b584a4efee2757a63e56557e1dd92dc0e36ece9b","previous_sha256":"00fdc7ffa679f032db14632aa0e4f1034f4454b36a9c7ee90709785dcfd545cb","schema":"benchinterlace.event.v1","seq":78}

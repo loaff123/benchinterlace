@@ -1,0 +1,68 @@
+{
+  "$comment": "Strict JSON parsing additionally rejects float/exponent integer spellings, duplicate keys, unpaired surrogates and NUL. x-maxUtf8Bytes is enforced by the handwritten validator. Cross-field identity, canonical-byte and aggregate limits require the corresponding runtime validator.",
+  "$id": "urn:benchinterlace:seal:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "files": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "bytes": {
+            "maximum": 301989888,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "path": {
+            "maxLength": 22,
+            "minLength": 1,
+            "pattern": "^(plan\\.json|events/[0-9]{6}\\.json|captures/[0-9]{6}\\.(stdout|stderr))$",
+            "type": "string",
+            "x-maxUtf8Bytes": 22
+          },
+          "sha256": {
+            "maxLength": 64,
+            "minLength": 64,
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string",
+            "x-maxUtf8Bytes": 64
+          }
+        },
+        "required": [
+          "path",
+          "bytes",
+          "sha256"
+        ],
+        "type": "object"
+      },
+      "maxItems": 1225,
+      "minItems": 1,
+      "type": "array"
+    },
+    "last_event_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string",
+      "x-maxUtf8Bytes": 64
+    },
+    "plan_id": {
+      "maxLength": 71,
+      "minLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string",
+      "x-maxUtf8Bytes": 71
+    },
+    "schema": {
+      "const": "benchinterlace.seal.v1"
+    }
+  },
+  "required": [
+    "schema",
+    "plan_id",
+    "last_event_sha256",
+    "files"
+  ],
+  "title": "BenchInterlace v1 seal",
+  "type": "object"
+}

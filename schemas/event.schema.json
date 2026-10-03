@@ -1,0 +1,1238 @@
+{
+  "$comment": "Strict JSON parsing additionally rejects float/exponent integer spellings, duplicate keys, unpaired surrogates and NUL. x-maxUtf8Bytes is enforced by the handwritten validator. Cross-field identity, canonical-byte and aggregate limits require the corresponding runtime validator.",
+  "$id": "urn:benchinterlace:event:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": false,
+          "properties": {
+            "expected_slots": {
+              "maximum": 100,
+              "minimum": 4,
+              "type": "integer"
+            },
+            "machine": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+              "type": "string",
+              "x-maxUtf8Bytes": 128
+            },
+            "platform": {
+              "const": "linux"
+            },
+            "python_version": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+              "type": "string",
+              "x-maxUtf8Bytes": 128
+            },
+            "runner_version": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+              "type": "string",
+              "x-maxUtf8Bytes": 128
+            },
+            "timer_name": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+              "type": "string",
+              "x-maxUtf8Bytes": 128
+            },
+            "timer_resolution_ns": {
+              "maximum": 9223372036854775807,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "runner_version",
+            "python_version",
+            "platform",
+            "machine",
+            "timer_name",
+            "timer_resolution_ns",
+            "expected_slots"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "const": "run_start"
+        },
+        "plan_id": {
+          "maxLength": 71,
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string",
+          "x-maxUtf8Bytes": 71
+        },
+        "previous_sha256": {
+          "oneOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string",
+              "x-maxUtf8Bytes": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema": {
+          "const": "benchinterlace.event.v1"
+        },
+        "seq": {
+          "maximum": 1023,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema",
+        "seq",
+        "previous_sha256",
+        "plan_id",
+        "kind",
+        "data"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": false,
+          "properties": {
+            "files": {
+              "items": {
+                "oneOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "bytes": {
+                        "maximum": 1073741824,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "id": {
+                        "maxLength": 32,
+                        "minLength": 1,
+                        "pattern": "^[a-z][a-z0-9_-]{0,31}$",
+                        "type": "string",
+                        "x-maxUtf8Bytes": 32
+                      },
+                      "sha256": {
+                        "maxLength": 64,
+                        "minLength": 64,
+                        "pattern": "^[0-9a-f]{64}$",
+                        "type": "string",
+                        "x-maxUtf8Bytes": 64
+                      },
+                      "stable_read": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "bytes",
+                      "sha256",
+                      "stable_read"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "error_code": {
+                        "enum": [
+                          "input_changed",
+                          "unstable_read",
+                          "launch_failed",
+                          "nonzero_exit",
+                          "command_timeout",
+                          "run_timeout",
+                          "output_limit",
+                          "output_mismatch",
+                          "capture_incomplete",
+                          "capture_io",
+                          "cleanup_unconfirmed",
+                          "interrupted",
+                          "plan_changed",
+                          "internal_error",
+                          "ownership_lost",
+                          "unsupported_primitive",
+                          "resource_limit",
+                          "invalid_schema",
+                          "invalid_path",
+                          "invalid_duration",
+                          "duplicate_record",
+                          "order_mismatch",
+                          "plan_mismatch",
+                          "hash_mismatch",
+                          "missing_record",
+                          "missing_seal",
+                          "unexpected_artifact",
+                          "execution_outcome_unknown",
+                          "report_mismatch"
+                        ]
+                      },
+                      "id": {
+                        "maxLength": 32,
+                        "minLength": 1,
+                        "pattern": "^[a-z][a-z0-9_-]{0,31}$",
+                        "type": "string",
+                        "x-maxUtf8Bytes": 32
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "error_code"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              },
+              "maxItems": 64,
+              "minItems": 0,
+              "type": "array"
+            },
+            "reasons": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "code": {
+                    "enum": [
+                      "input_changed",
+                      "unstable_read",
+                      "launch_failed",
+                      "nonzero_exit",
+                      "command_timeout",
+                      "run_timeout",
+                      "output_limit",
+                      "output_mismatch",
+                      "capture_incomplete",
+                      "capture_io",
+                      "cleanup_unconfirmed",
+                      "interrupted",
+                      "plan_changed",
+                      "internal_error",
+                      "ownership_lost",
+                      "unsupported_primitive",
+                      "resource_limit",
+                      "invalid_schema",
+                      "invalid_path",
+                      "invalid_duration",
+                      "duplicate_record",
+                      "order_mismatch",
+                      "plan_mismatch",
+                      "hash_mismatch",
+                      "missing_record",
+                      "missing_seal",
+                      "unexpected_artifact",
+                      "execution_outcome_unknown",
+                      "report_mismatch"
+                    ]
+                  },
+                  "detail": {
+                    "maxLength": 1024,
+                    "minLength": 0,
+                    "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+                    "type": "string",
+                    "x-maxUtf8Bytes": 1024
+                  }
+                },
+                "required": [
+                  "code"
+                ],
+                "type": "object"
+              },
+              "maxItems": 100,
+              "minItems": 0,
+              "type": "array"
+            },
+            "slot": {
+              "oneOf": [
+                {
+                  "maximum": 99,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "stage": {
+              "enum": [
+                "pre-run",
+                "pre-slot",
+                "post-slot",
+                "post-run"
+              ]
+            },
+            "status": {
+              "enum": [
+                "ok",
+                "failed"
+              ]
+            }
+          },
+          "required": [
+            "stage",
+            "slot",
+            "files",
+            "status",
+            "reasons"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "const": "fingerprint_check"
+        },
+        "plan_id": {
+          "maxLength": 71,
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string",
+          "x-maxUtf8Bytes": 71
+        },
+        "previous_sha256": {
+          "oneOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string",
+              "x-maxUtf8Bytes": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema": {
+          "const": "benchinterlace.event.v1"
+        },
+        "seq": {
+          "maximum": 1023,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema",
+        "seq",
+        "previous_sha256",
+        "plan_id",
+        "kind",
+        "data"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": false,
+          "properties": {
+            "arm": {
+              "enum": [
+                "A",
+                "B"
+              ]
+            },
+            "pair": {
+              "maximum": 39,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "phase": {
+              "enum": [
+                "warmup",
+                "measured"
+              ]
+            },
+            "position": {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "slot": {
+              "maximum": 99,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "slot",
+            "phase",
+            "pair",
+            "position",
+            "arm"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "const": "slot_start"
+        },
+        "plan_id": {
+          "maxLength": 71,
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string",
+          "x-maxUtf8Bytes": 71
+        },
+        "previous_sha256": {
+          "oneOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string",
+              "x-maxUtf8Bytes": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema": {
+          "const": "benchinterlace.event.v1"
+        },
+        "seq": {
+          "maximum": 1023,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema",
+        "seq",
+        "previous_sha256",
+        "plan_id",
+        "kind",
+        "data"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": false,
+          "properties": {
+            "elapsed_exceeded_timeout": {
+              "oneOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "elapsed_ns": {
+              "oneOf": [
+                {
+                  "maximum": 9223372036854775807,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "exit_code": {
+              "oneOf": [
+                {
+                  "maximum": 255,
+                  "minimum": -64,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "issues": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "code": {
+                    "enum": [
+                      "input_changed",
+                      "unstable_read",
+                      "launch_failed",
+                      "nonzero_exit",
+                      "command_timeout",
+                      "run_timeout",
+                      "output_limit",
+                      "output_mismatch",
+                      "capture_incomplete",
+                      "capture_io",
+                      "cleanup_unconfirmed",
+                      "interrupted",
+                      "plan_changed",
+                      "internal_error",
+                      "ownership_lost",
+                      "unsupported_primitive",
+                      "resource_limit",
+                      "invalid_schema",
+                      "invalid_path",
+                      "invalid_duration",
+                      "duplicate_record",
+                      "order_mismatch",
+                      "plan_mismatch",
+                      "hash_mismatch",
+                      "missing_record",
+                      "missing_seal",
+                      "unexpected_artifact",
+                      "execution_outcome_unknown",
+                      "report_mismatch"
+                    ]
+                  },
+                  "detail": {
+                    "maxLength": 1024,
+                    "minLength": 0,
+                    "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+                    "type": "string",
+                    "x-maxUtf8Bytes": 1024
+                  }
+                },
+                "required": [
+                  "code"
+                ],
+                "type": "object"
+              },
+              "maxItems": 100,
+              "minItems": 0,
+              "type": "array"
+            },
+            "slot": {
+              "maximum": 99,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "termination": {
+              "enum": [
+                "exited",
+                "signal",
+                "launch-failed",
+                "timeout",
+                "interrupted",
+                "unknown"
+              ]
+            },
+            "timeout_requested_ns": {
+              "oneOf": [
+                {
+                  "maximum": 9223372036854775807,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "slot",
+            "elapsed_ns",
+            "exit_code",
+            "termination",
+            "timeout_requested_ns",
+            "elapsed_exceeded_timeout",
+            "issues"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "const": "slot_timing"
+        },
+        "plan_id": {
+          "maxLength": 71,
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string",
+          "x-maxUtf8Bytes": 71
+        },
+        "previous_sha256": {
+          "oneOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string",
+              "x-maxUtf8Bytes": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema": {
+          "const": "benchinterlace.event.v1"
+        },
+        "seq": {
+          "maximum": 1023,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema",
+        "seq",
+        "previous_sha256",
+        "plan_id",
+        "kind",
+        "data"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": false,
+          "properties": {
+            "cleanup": {
+              "enum": [
+                "completed",
+                "unconfirmed",
+                "failed"
+              ]
+            },
+            "issues": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "code": {
+                    "enum": [
+                      "input_changed",
+                      "unstable_read",
+                      "launch_failed",
+                      "nonzero_exit",
+                      "command_timeout",
+                      "run_timeout",
+                      "output_limit",
+                      "output_mismatch",
+                      "capture_incomplete",
+                      "capture_io",
+                      "cleanup_unconfirmed",
+                      "interrupted",
+                      "plan_changed",
+                      "internal_error",
+                      "ownership_lost",
+                      "unsupported_primitive",
+                      "resource_limit",
+                      "invalid_schema",
+                      "invalid_path",
+                      "invalid_duration",
+                      "duplicate_record",
+                      "order_mismatch",
+                      "plan_mismatch",
+                      "hash_mismatch",
+                      "missing_record",
+                      "missing_seal",
+                      "unexpected_artifact",
+                      "execution_outcome_unknown",
+                      "report_mismatch"
+                    ]
+                  },
+                  "detail": {
+                    "maxLength": 1024,
+                    "minLength": 0,
+                    "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+                    "type": "string",
+                    "x-maxUtf8Bytes": 1024
+                  }
+                },
+                "required": [
+                  "code"
+                ],
+                "type": "object"
+              },
+              "maxItems": 100,
+              "minItems": 0,
+              "type": "array"
+            },
+            "output_check": {
+              "enum": [
+                "pending-pair",
+                "passed",
+                "not-requested",
+                "failed"
+              ]
+            },
+            "slot": {
+              "maximum": 99,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "streams": {
+              "additionalProperties": false,
+              "properties": {
+                "stderr": {
+                  "oneOf": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "eof": {
+                          "type": "boolean"
+                        },
+                        "observed_bytes": {
+                          "maximum": 9223372036854775807,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "path": {
+                          "maxLength": 22,
+                          "minLength": 22,
+                          "pattern": "^captures/[0-9]{6}\\.(stdout|stderr)$",
+                          "type": "string",
+                          "x-maxUtf8Bytes": 22
+                        },
+                        "retained_bytes": {
+                          "maximum": 1048576,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "sha256": {
+                          "maxLength": 64,
+                          "minLength": 64,
+                          "pattern": "^[0-9a-f]{64}$",
+                          "type": "string",
+                          "x-maxUtf8Bytes": 64
+                        },
+                        "state": {
+                          "const": "published"
+                        },
+                        "truncated": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "state",
+                        "path",
+                        "retained_bytes",
+                        "observed_bytes",
+                        "sha256",
+                        "eof",
+                        "truncated"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "reason": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "code": {
+                              "enum": [
+                                "input_changed",
+                                "unstable_read",
+                                "launch_failed",
+                                "nonzero_exit",
+                                "command_timeout",
+                                "run_timeout",
+                                "output_limit",
+                                "output_mismatch",
+                                "capture_incomplete",
+                                "capture_io",
+                                "cleanup_unconfirmed",
+                                "interrupted",
+                                "plan_changed",
+                                "internal_error",
+                                "ownership_lost",
+                                "unsupported_primitive",
+                                "resource_limit",
+                                "invalid_schema",
+                                "invalid_path",
+                                "invalid_duration",
+                                "duplicate_record",
+                                "order_mismatch",
+                                "plan_mismatch",
+                                "hash_mismatch",
+                                "missing_record",
+                                "missing_seal",
+                                "unexpected_artifact",
+                                "execution_outcome_unknown",
+                                "report_mismatch"
+                              ]
+                            },
+                            "detail": {
+                              "maxLength": 1024,
+                              "minLength": 0,
+                              "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+                              "type": "string",
+                              "x-maxUtf8Bytes": 1024
+                            }
+                          },
+                          "required": [
+                            "code"
+                          ],
+                          "type": "object"
+                        },
+                        "state": {
+                          "const": "unavailable"
+                        }
+                      },
+                      "required": [
+                        "state",
+                        "reason"
+                      ],
+                      "type": "object"
+                    }
+                  ]
+                },
+                "stdout": {
+                  "oneOf": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "eof": {
+                          "type": "boolean"
+                        },
+                        "observed_bytes": {
+                          "maximum": 9223372036854775807,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "path": {
+                          "maxLength": 22,
+                          "minLength": 22,
+                          "pattern": "^captures/[0-9]{6}\\.(stdout|stderr)$",
+                          "type": "string",
+                          "x-maxUtf8Bytes": 22
+                        },
+                        "retained_bytes": {
+                          "maximum": 1048576,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "sha256": {
+                          "maxLength": 64,
+                          "minLength": 64,
+                          "pattern": "^[0-9a-f]{64}$",
+                          "type": "string",
+                          "x-maxUtf8Bytes": 64
+                        },
+                        "state": {
+                          "const": "published"
+                        },
+                        "truncated": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "state",
+                        "path",
+                        "retained_bytes",
+                        "observed_bytes",
+                        "sha256",
+                        "eof",
+                        "truncated"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "reason": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "code": {
+                              "enum": [
+                                "input_changed",
+                                "unstable_read",
+                                "launch_failed",
+                                "nonzero_exit",
+                                "command_timeout",
+                                "run_timeout",
+                                "output_limit",
+                                "output_mismatch",
+                                "capture_incomplete",
+                                "capture_io",
+                                "cleanup_unconfirmed",
+                                "interrupted",
+                                "plan_changed",
+                                "internal_error",
+                                "ownership_lost",
+                                "unsupported_primitive",
+                                "resource_limit",
+                                "invalid_schema",
+                                "invalid_path",
+                                "invalid_duration",
+                                "duplicate_record",
+                                "order_mismatch",
+                                "plan_mismatch",
+                                "hash_mismatch",
+                                "missing_record",
+                                "missing_seal",
+                                "unexpected_artifact",
+                                "execution_outcome_unknown",
+                                "report_mismatch"
+                              ]
+                            },
+                            "detail": {
+                              "maxLength": 1024,
+                              "minLength": 0,
+                              "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+                              "type": "string",
+                              "x-maxUtf8Bytes": 1024
+                            }
+                          },
+                          "required": [
+                            "code"
+                          ],
+                          "type": "object"
+                        },
+                        "state": {
+                          "const": "unavailable"
+                        }
+                      },
+                      "required": [
+                        "state",
+                        "reason"
+                      ],
+                      "type": "object"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "stdout",
+                "stderr"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "slot",
+            "streams",
+            "output_check",
+            "cleanup",
+            "issues"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "const": "slot_evidence"
+        },
+        "plan_id": {
+          "maxLength": 71,
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string",
+          "x-maxUtf8Bytes": 71
+        },
+        "previous_sha256": {
+          "oneOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string",
+              "x-maxUtf8Bytes": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema": {
+          "const": "benchinterlace.event.v1"
+        },
+        "seq": {
+          "maximum": 1023,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema",
+        "seq",
+        "previous_sha256",
+        "plan_id",
+        "kind",
+        "data"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": false,
+          "properties": {
+            "pair": {
+              "maximum": 39,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "phase": {
+              "enum": [
+                "warmup",
+                "measured"
+              ]
+            },
+            "reasons": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "code": {
+                    "enum": [
+                      "input_changed",
+                      "unstable_read",
+                      "launch_failed",
+                      "nonzero_exit",
+                      "command_timeout",
+                      "run_timeout",
+                      "output_limit",
+                      "output_mismatch",
+                      "capture_incomplete",
+                      "capture_io",
+                      "cleanup_unconfirmed",
+                      "interrupted",
+                      "plan_changed",
+                      "internal_error",
+                      "ownership_lost",
+                      "unsupported_primitive",
+                      "resource_limit",
+                      "invalid_schema",
+                      "invalid_path",
+                      "invalid_duration",
+                      "duplicate_record",
+                      "order_mismatch",
+                      "plan_mismatch",
+                      "hash_mismatch",
+                      "missing_record",
+                      "missing_seal",
+                      "unexpected_artifact",
+                      "execution_outcome_unknown",
+                      "report_mismatch"
+                    ]
+                  },
+                  "detail": {
+                    "maxLength": 1024,
+                    "minLength": 0,
+                    "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+                    "type": "string",
+                    "x-maxUtf8Bytes": 1024
+                  }
+                },
+                "required": [
+                  "code"
+                ],
+                "type": "object"
+              },
+              "maxItems": 100,
+              "minItems": 0,
+              "type": "array"
+            },
+            "status": {
+              "enum": [
+                "passed",
+                "not-requested",
+                "failed"
+              ]
+            }
+          },
+          "required": [
+            "phase",
+            "pair",
+            "status",
+            "reasons"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "const": "pair_check"
+        },
+        "plan_id": {
+          "maxLength": 71,
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string",
+          "x-maxUtf8Bytes": 71
+        },
+        "previous_sha256": {
+          "oneOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string",
+              "x-maxUtf8Bytes": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema": {
+          "const": "benchinterlace.event.v1"
+        },
+        "seq": {
+          "maximum": 1023,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema",
+        "seq",
+        "previous_sha256",
+        "plan_id",
+        "kind",
+        "data"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": false,
+          "properties": {
+            "completed_slots": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "not_run_slots": {
+              "items": {
+                "maximum": 99,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "maxItems": 100,
+              "minItems": 0,
+              "type": "array"
+            },
+            "reasons": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "code": {
+                    "enum": [
+                      "input_changed",
+                      "unstable_read",
+                      "launch_failed",
+                      "nonzero_exit",
+                      "command_timeout",
+                      "run_timeout",
+                      "output_limit",
+                      "output_mismatch",
+                      "capture_incomplete",
+                      "capture_io",
+                      "cleanup_unconfirmed",
+                      "interrupted",
+                      "plan_changed",
+                      "internal_error",
+                      "ownership_lost",
+                      "unsupported_primitive",
+                      "resource_limit",
+                      "invalid_schema",
+                      "invalid_path",
+                      "invalid_duration",
+                      "duplicate_record",
+                      "order_mismatch",
+                      "plan_mismatch",
+                      "hash_mismatch",
+                      "missing_record",
+                      "missing_seal",
+                      "unexpected_artifact",
+                      "execution_outcome_unknown",
+                      "report_mismatch"
+                    ]
+                  },
+                  "detail": {
+                    "maxLength": 1024,
+                    "minLength": 0,
+                    "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+                    "type": "string",
+                    "x-maxUtf8Bytes": 1024
+                  }
+                },
+                "required": [
+                  "code"
+                ],
+                "type": "object"
+              },
+              "maxItems": 100,
+              "minItems": 0,
+              "type": "array"
+            },
+            "state": {
+              "enum": [
+                "complete",
+                "aborted"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "completed_slots",
+            "not_run_slots",
+            "reasons"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "const": "run_end"
+        },
+        "plan_id": {
+          "maxLength": 71,
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string",
+          "x-maxUtf8Bytes": 71
+        },
+        "previous_sha256": {
+          "oneOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string",
+              "x-maxUtf8Bytes": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema": {
+          "const": "benchinterlace.event.v1"
+        },
+        "seq": {
+          "maximum": 1023,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema",
+        "seq",
+        "previous_sha256",
+        "plan_id",
+        "kind",
+        "data"
+      ],
+      "type": "object"
+    }
+  ],
+  "title": "BenchInterlace v1 event"
+}

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "benchinterlace"
+version = "0.1.0a2"
+description = "Bounded randomized paired-command collection and exact offline analysis"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{name = "BenchInterlace contributors"}]
+dependencies = []
+classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
+
+[project.scripts]
+benchinterlace = "benchinterlace.cli:main"
+
+[tool.setuptools]
+packages = ["benchinterlace"]

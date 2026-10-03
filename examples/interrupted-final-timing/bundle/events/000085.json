@@ -1,0 +1,1 @@
+{"data":{"arm":"A","pair":7,"phase":"measured","position":1,"slot":15},"kind":"slot_start","plan_id":"sha256:7fdc0c9980b5dacddf1fd318b584a4efee2757a63e56557e1dd92dc0e36ece9b","previous_sha256":"f14436598da7605424ab6c3cfc0072d55c7847b81749bb3bde7c975ce949cfa2","schema":"benchinterlace.event.v1","seq":85}

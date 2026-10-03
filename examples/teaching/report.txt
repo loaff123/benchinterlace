@@ -1,0 +1,16 @@
+BenchInterlace: assumption-qualified offline analysis
+Evidence: complete
+Inference: available
+Plan: sha256:7fdc0c9980b5dacddf1fd318b584a4efee2757a63e56557e1dd92dc0e36ece9b
+warmup slots: planned=0, started=0, timed=0, validated=0, unstarted=0
+measured slots: planned=16, started=16, timed=16, validated=16, unstarted=0
+Alternative: two-sided
+Exact inclusive tail: 2/256 = 0.007812500000
+Observed mean(B)/mean(A): 18/17
+Observed mean difference ns: 10000000/1
+Warning assumptions_unverified: Assumption-qualified calculation. Alternative: two-sided. Requires genuinely independent fair AB/BA assignment and the global sharp null: every measured slot duration is invariant under every complete assignment history, including direct and carryover effects. This is not a weak mean-null test or a causal mechanism claim.
+Warning no_complete_provenance: Hashes establish byte consistency, not authentic collection, truthful timing, genuine randomness, independent preregistration, or unchanged undeclared dependencies. Recorded absolute input paths are inert during verification.
+Warning repeated_attempts_uncontrolled: Unseen discarded plans, seed/order selection, repeated attempts until completion or a favorable result, and selective reporting are not audited or adjusted.
+Warning selection_not_adjusted: Conditioning on successful completion can be anti-conservative when completion depends on assignment. Counting a failed attempt as no rejection preserves a single-attempt unconditional bound only when complete-data slot outcomes are defined for every assignment. No multiplicity adjustment across workloads, alternatives, sessions, or projects.
+Warning no_semantic_equivalence_proof: Output check: equal-within-pair. Matching captured bytes does not prove semantic equivalence. Descriptive mean(B)/mean(A) is an observed ratio, not a confidence interval, true-speedup estimate, regression gate, or equivalence finding.
+Warning no_microbenchmark_accuracy_claim: Elapsed timing includes launch, scheduling, exit-observation and concurrent capture effects. No sub-millisecond accuracy or cross-hardware reproducibility claim.

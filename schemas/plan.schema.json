@@ -1,0 +1,330 @@
+{
+  "$comment": "Strict JSON parsing additionally rejects float/exponent integer spellings, duplicate keys, unpaired surrogates and NUL. x-maxUtf8Bytes is enforced by the handwritten validator. Cross-field identity, canonical-byte and aggregate limits require the corresponding runtime validator.",
+  "$id": "urn:benchinterlace:plan:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "payload": {
+      "additionalProperties": false,
+      "properties": {
+        "alternative": {
+          "enum": [
+            "two-sided",
+            "B-slower"
+          ]
+        },
+        "assignments": {
+          "additionalProperties": false,
+          "properties": {
+            "measured": {
+              "items": {
+                "enum": [
+                  "AB",
+                  "BA"
+                ]
+              },
+              "maxItems": 40,
+              "minItems": 2,
+              "type": "array"
+            },
+            "method": {
+              "const": "independent-os-bits-v1"
+            },
+            "warmup": {
+              "items": {
+                "enum": [
+                  "AB",
+                  "BA"
+                ]
+              },
+              "maxItems": 10,
+              "minItems": 0,
+              "type": "array"
+            }
+          },
+          "required": [
+            "method",
+            "measured",
+            "warmup"
+          ],
+          "type": "object"
+        },
+        "capture_bytes_per_stream": {
+          "maximum": 1048576,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "capture_bytes_total": {
+          "maximum": 268435456,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "capture_contract": {
+          "const": "bounded-pipes-v1"
+        },
+        "command_files": {
+          "additionalProperties": false,
+          "properties": {
+            "A": {
+              "maxLength": 32,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_-]{0,31}$",
+              "type": "string",
+              "x-maxUtf8Bytes": 32
+            },
+            "B": {
+              "maxLength": 32,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_-]{0,31}$",
+              "type": "string",
+              "x-maxUtf8Bytes": 32
+            }
+          },
+          "required": [
+            "A",
+            "B"
+          ],
+          "type": "object"
+        },
+        "command_timeout_ns": {
+          "maximum": 3600000000000,
+          "minimum": 1000000,
+          "type": "integer"
+        },
+        "commands": {
+          "additionalProperties": false,
+          "properties": {
+            "A": {
+              "additionalProperties": false,
+              "properties": {
+                "argv": {
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 0,
+                    "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+                    "type": "string",
+                    "x-maxUtf8Bytes": 4096
+                  },
+                  "maxItems": 64,
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "argv"
+              ],
+              "type": "object"
+            },
+            "B": {
+              "additionalProperties": false,
+              "properties": {
+                "argv": {
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 0,
+                    "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+                    "type": "string",
+                    "x-maxUtf8Bytes": 4096
+                  },
+                  "maxItems": 64,
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "argv"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "A",
+            "B"
+          ],
+          "type": "object"
+        },
+        "cwd": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "pattern": "^/[^\\u0000\\ud800-\\udfff]*$",
+          "type": "string",
+          "x-maxUtf8Bytes": 4096
+        },
+        "files": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "bytes": {
+                "maximum": 1073741824,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "id": {
+                "maxLength": 32,
+                "minLength": 1,
+                "pattern": "^[a-z][a-z0-9_-]{0,31}$",
+                "type": "string",
+                "x-maxUtf8Bytes": 32
+              },
+              "path": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "pattern": "^/[^\\u0000\\ud800-\\udfff]*$",
+                "type": "string",
+                "x-maxUtf8Bytes": 4096
+              },
+              "sha256": {
+                "maxLength": 64,
+                "minLength": 64,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string",
+                "x-maxUtf8Bytes": 64
+              }
+            },
+            "required": [
+              "id",
+              "path",
+              "bytes",
+              "sha256"
+            ],
+            "type": "object"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "type": "array"
+        },
+        "fingerprint_contract": {
+          "const": "declared-before-after-v1"
+        },
+        "generator_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+          "type": "string",
+          "x-maxUtf8Bytes": 128
+        },
+        "measured_pairs": {
+          "maximum": 40,
+          "minimum": 2,
+          "type": "integer"
+        },
+        "output_check": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "mode": {
+                  "const": "equal-within-pair"
+                }
+              },
+              "required": [
+                "mode"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "mode": {
+                  "const": "none"
+                }
+              },
+              "required": [
+                "mode"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "bytes": {
+                  "maximum": 1048576,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "mode": {
+                  "const": "expected-sha256"
+                },
+                "sha256": {
+                  "maxLength": 64,
+                  "minLength": 64,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string",
+                  "x-maxUtf8Bytes": 64
+                }
+              },
+              "required": [
+                "mode",
+                "sha256",
+                "bytes"
+              ],
+              "type": "object"
+            }
+          ]
+        },
+        "run_timeout_ns": {
+          "maximum": 86400000000000,
+          "minimum": 1000000000,
+          "type": "integer"
+        },
+        "runner_contract": {
+          "const": "linux-foreground-v1"
+        },
+        "schema": {
+          "const": "benchinterlace.plan.v1"
+        },
+        "timer_contract": {
+          "const": "spawn-to-observed-leader-exit-v1"
+        },
+        "warmup_pairs": {
+          "maximum": 10,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "workload": {
+          "maxLength": 128,
+          "minLength": 0,
+          "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+          "type": "string",
+          "x-maxUtf8Bytes": 128
+        }
+      },
+      "required": [
+        "schema",
+        "workload",
+        "cwd",
+        "commands",
+        "measured_pairs",
+        "warmup_pairs",
+        "alternative",
+        "command_timeout_ns",
+        "run_timeout_ns",
+        "capture_bytes_per_stream",
+        "capture_bytes_total",
+        "output_check",
+        "files",
+        "command_files",
+        "assignments",
+        "runner_contract",
+        "timer_contract",
+        "capture_contract",
+        "fingerprint_contract",
+        "generator_version"
+      ],
+      "type": "object"
+    },
+    "plan_id": {
+      "maxLength": 71,
+      "minLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string",
+      "x-maxUtf8Bytes": 71
+    }
+  },
+  "required": [
+    "plan_id",
+    "payload"
+  ],
+  "title": "BenchInterlace v1 plan",
+  "type": "object"
+}

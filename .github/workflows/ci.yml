@@ -1,0 +1,65 @@
+name: Linux alpha qualification
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    name: Linux / Python ${{ matrix.python }} / ${{ matrix.backend }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+        backend: [current]
+        include:
+          - python: '3.12'
+            backend: minimum
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Record interpreter and runner
+        run: |
+          python -VV
+          uname -a
+          printf 'ImageOS=%s ImageVersion=%s\n' "$ImageOS" "$ImageVersion"
+      - name: Full standard-library suite
+        run: python -m unittest discover -v
+      - name: Maximum-pair resource gates
+        run: python scripts/ci_max40.py
+      - name: Install current build-only tools
+        if: matrix.backend == 'current'
+        run: python -m pip install --upgrade 'setuptools>=77' wheel
+      - name: Install minimum-series build-only tools
+        if: matrix.backend == 'minimum'
+        run: python -m pip install 'setuptools==77.0.3' wheel
+      - name: Record builder and prove offline installed workflows
+        run: |
+          python -m pip show setuptools wheel
+          python scripts/ci_package_smoke.py
+
+  scipy-reference:
+    name: Optional SciPy reference / Linux Python 3.12
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.12'
+      - run: python -m pip install scipy
+      - name: Exact reference comparisons
+        env:
+          BENCHINTERLACE_SCIPY_CROSSCHECK: '1'
+        run: python -m unittest tests.test_exact -v

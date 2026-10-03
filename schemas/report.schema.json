@@ -1,0 +1,427 @@
+{
+  "$comment": "Strict JSON parsing additionally rejects float/exponent integer spellings, duplicate keys, unpaired surrogates and NUL. x-maxUtf8Bytes is enforced by the handwritten validator. Cross-field identity, canonical-byte and aggregate limits require the corresponding runtime validator.",
+  "$id": "urn:benchinterlace:report:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "analysis_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+      "type": "string",
+      "x-maxUtf8Bytes": 128
+    },
+    "bundle_sha256": {
+      "oneOf": [
+        {
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string",
+          "x-maxUtf8Bytes": 64
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "counts": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "measured": {
+              "additionalProperties": false,
+              "properties": {
+                "planned": {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "started": {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "timed": {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "unstarted": {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "validated": {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "planned",
+                "started",
+                "timed",
+                "validated",
+                "unstarted"
+              ],
+              "type": "object"
+            },
+            "warmup": {
+              "additionalProperties": false,
+              "properties": {
+                "planned": {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "started": {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "timed": {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "unstarted": {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "validated": {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "planned",
+                "started",
+                "timed",
+                "validated",
+                "unstarted"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "warmup",
+            "measured"
+          ],
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "descriptive": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "mean_a_ns": {
+              "additionalProperties": false,
+              "properties": {
+                "denominator": {
+                  "maximum": 368934881474191032280,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "numerator": {
+                  "maximum": 368934881474191032280,
+                  "minimum": -368934881474191032280,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "numerator",
+                "denominator"
+              ],
+              "type": "object"
+            },
+            "mean_b_ns": {
+              "additionalProperties": false,
+              "properties": {
+                "denominator": {
+                  "maximum": 368934881474191032280,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "numerator": {
+                  "maximum": 368934881474191032280,
+                  "minimum": -368934881474191032280,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "numerator",
+                "denominator"
+              ],
+              "type": "object"
+            },
+            "mean_difference_ns": {
+              "additionalProperties": false,
+              "properties": {
+                "denominator": {
+                  "maximum": 368934881474191032280,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "numerator": {
+                  "maximum": 368934881474191032280,
+                  "minimum": -368934881474191032280,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "numerator",
+                "denominator"
+              ],
+              "type": "object"
+            },
+            "n": {
+              "maximum": 40,
+              "minimum": 2,
+              "type": "integer"
+            },
+            "ratio_b_over_a": {
+              "additionalProperties": false,
+              "properties": {
+                "denominator": {
+                  "maximum": 368934881474191032280,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "numerator": {
+                  "maximum": 368934881474191032280,
+                  "minimum": -368934881474191032280,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "numerator",
+                "denominator"
+              ],
+              "type": "object"
+            },
+            "sum_a_ns": {
+              "maximum": 368934881474191032280,
+              "minimum": 2,
+              "type": "integer"
+            },
+            "sum_b_ns": {
+              "maximum": 368934881474191032280,
+              "minimum": 2,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "n",
+            "sum_a_ns",
+            "sum_b_ns",
+            "mean_a_ns",
+            "mean_b_ns",
+            "mean_difference_ns",
+            "ratio_b_over_a"
+          ],
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evidence_status": {
+      "enum": [
+        "complete",
+        "incomplete",
+        "failed",
+        "malformed"
+      ]
+    },
+    "inference_status": {
+      "enum": [
+        "available",
+        "withheld",
+        "unsupported"
+      ]
+    },
+    "plan_id": {
+      "oneOf": [
+        {
+          "maxLength": 71,
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string",
+          "x-maxUtf8Bytes": 71
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reasons": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "input_changed",
+              "unstable_read",
+              "launch_failed",
+              "nonzero_exit",
+              "command_timeout",
+              "run_timeout",
+              "output_limit",
+              "output_mismatch",
+              "capture_incomplete",
+              "capture_io",
+              "cleanup_unconfirmed",
+              "interrupted",
+              "plan_changed",
+              "internal_error",
+              "ownership_lost",
+              "unsupported_primitive",
+              "resource_limit",
+              "invalid_schema",
+              "invalid_path",
+              "invalid_duration",
+              "duplicate_record",
+              "order_mismatch",
+              "plan_mismatch",
+              "hash_mismatch",
+              "missing_record",
+              "missing_seal",
+              "unexpected_artifact",
+              "execution_outcome_unknown",
+              "report_mismatch"
+            ]
+          },
+          "detail": {
+            "maxLength": 1024,
+            "minLength": 0,
+            "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+            "type": "string",
+            "x-maxUtf8Bytes": 1024
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      },
+      "maxItems": 100,
+      "minItems": 0,
+      "type": "array"
+    },
+    "schema": {
+      "const": "benchinterlace.report.v1"
+    },
+    "test": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "alternative": {
+              "enum": [
+                "two-sided",
+                "B-slower"
+              ]
+            },
+            "assignment_count": {
+              "maximum": 1099511627776,
+              "minimum": 4,
+              "type": "integer"
+            },
+            "method": {
+              "const": "exact-paired-assignment-v1"
+            },
+            "p_decimal": {
+              "maxLength": 14,
+              "minLength": 14,
+              "pattern": "^[01]\\.[0-9]{12}$",
+              "type": "string",
+              "x-maxUtf8Bytes": 14
+            },
+            "statistic_sum_difference_ns": {
+              "maximum": 368934881474191032280,
+              "minimum": -368934881474191032280,
+              "type": "integer"
+            },
+            "tail_count": {
+              "maximum": 1099511627776,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "method",
+            "alternative",
+            "statistic_sum_difference_ns",
+            "tail_count",
+            "assignment_count",
+            "p_decimal"
+          ],
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "warnings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "assumptions_unverified",
+              "output_not_checked",
+              "no_semantic_equivalence_proof",
+              "repeated_attempts_uncontrolled",
+              "selection_not_adjusted",
+              "no_complete_provenance",
+              "no_microbenchmark_accuracy_claim",
+              "structural_memory_cap_only",
+              "small_n_resolution"
+            ]
+          },
+          "text": {
+            "maxLength": 1024,
+            "minLength": 0,
+            "pattern": "^[^\\u0000\\ud800-\\udfff]*$",
+            "type": "string",
+            "x-maxUtf8Bytes": 1024
+          }
+        },
+        "required": [
+          "code",
+          "text"
+        ],
+        "type": "object"
+      },
+      "maxItems": 9,
+      "minItems": 0,
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "plan_id",
+    "bundle_sha256",
+    "analysis_version",
+    "evidence_status",
+    "inference_status",
+    "reasons",
+    "warnings",
+    "counts",
+    "descriptive",
+    "test"
+  ],
+  "title": "BenchInterlace v1 report",
+  "type": "object"
+}
