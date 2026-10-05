@@ -67,8 +67,10 @@ def interpret(bundle):
         elif k=='fingerprint_check':
             if (d['stage'],d['slot'])!=expected[1]: bad('order_mismatch','Fingerprint position mismatch')
             ids=[f['id'] for f in d['files']]
-            if ids!=sorted(files): bad('missing_record','Fingerprint must cover every declared file exactly once in ID order')
-            matches=True
+            # Malformed coverage cannot qualify a slot even when every supplied
+            # file happens to match; preserved counts must reflect required checks.
+            matches=ids==sorted(files)
+            if not matches: bad('missing_record','Fingerprint must cover every declared file exactly once in ID order')
             for f in d['files']:
                 declared=files.get(f['id'])
                 if declared is None: bad('plan_mismatch','Unknown fingerprint file'); matches=False; continue

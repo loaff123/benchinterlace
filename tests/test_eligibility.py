@@ -1,3 +1,4 @@
+import copy
 import json
 from pathlib import Path
 import tempfile
@@ -50,6 +51,62 @@ class EligibilityTests(unittest.TestCase):
         self.change(lambda es: es.pop(next(i for i,e in enumerate(es) if e['kind']=='pair_check'))); self.assertEqual(self.inspect().status,'malformed')
     def test_missing_all_declared_fingerprint_resealed(self):
         self.change(lambda es: next(e for e in es if e['kind']=='fingerprint_check')['data']['files'].pop()); self.assertEqual(self.inspect().status,'malformed')
+
+    def test_incomplete_post_slot_fingerprint_does_not_validate_slot(self):
+        from benchinterlace import report
+        from benchinterlace.errors import ValidationError
+        from unittest.mock import patch
+        # Cover warmup and measured slots without discarding other valid facts.
+        original = load_events(self.root)
+        for slot, phase in ((0, 'warmup'), (2, 'measured'), (17, 'measured')):
+            with self.subTest(slot=slot):
+                events = copy.deepcopy(original)
+                fingerprint = next(e['data'] for e in events
+                    if e['kind']=='fingerprint_check' and e['data']['stage']=='post-slot'
+                    and e['data']['slot']==slot)
+                fingerprint['files'].pop()
+                write_events(self.root, events); reseal(self.root)
+                with patch.object(report, 'run_exact', side_effect=AssertionError('ineligible evidence reached worker')):
+                    result = report.analyze(self.root)
+                    self.assertEqual(result['evidence_status'], 'malformed')
+                    self.assertEqual(result['inference_status'], 'withheld')
+                    self.assertIsNone(result['test']); self.assertIsNone(result['descriptive'])
+                    for name, planned in (('warmup', 2), ('measured', 16)):
+                        self.assertEqual(result['counts'][name], dict(planned=planned,
+                            started=planned, timed=planned, unstarted=0,
+                            validated=planned-int(name==phase)))
+                    saved = Path(self.tmp.name)/'report.json'
+                    saved.write_bytes(encode(result))
+                    self.assertEqual(report.verify(self.root, saved), result)
+                    result['counts'][phase]['validated'] += 1
+                    saved.write_bytes(encode(result))
+                    with self.assertRaises(ValidationError): report.verify(self.root, saved)
+
+    def test_empty_post_slot_fingerprints_with_late_failure_preserve_only_times(self):
+        def alter(es):
+            for event in es:
+                if event['kind']=='fingerprint_check' and event['data']['stage']=='post-slot':
+                    event['data']['files'] = []
+            es[-2]['data'].update(status='failed', reasons=[{'code':'input_changed'}])
+            es[-2]['data']['files'][0]['sha256'] = '0'*64
+            es[-1]['data'].update(state='aborted', reasons=[{'code':'input_changed'}])
+        self.change(alter)
+        evidence = self.inspect()
+        self.assertEqual(evidence.status, 'malformed')
+        self.assertIsNone(evidence.a); self.assertIsNone(evidence.b)
+        for phase, planned in (('warmup', 2), ('measured', 16)):
+            self.assertEqual(evidence.counts[phase], dict(planned=planned,
+                started=planned, timed=planned, validated=0, unstarted=0))
+
+    def test_out_of_order_post_slot_fingerprint_does_not_validate_slot(self):
+        def alter(es):
+            next(e for e in es if e['kind']=='fingerprint_check'
+                and e['data']['stage']=='post-slot')['data']['files'].reverse()
+        self.change(alter)
+        evidence = self.inspect()
+        self.assertEqual(evidence.status, 'malformed')
+        self.assertEqual(evidence.counts['warmup']['validated'], 1)
+        self.assertEqual(evidence.counts['measured']['validated'], 16)
 
     def test_cross_phase_wrong_timing_slot_has_bounded_diagnostic(self):
         from benchinterlace.report import analyze
